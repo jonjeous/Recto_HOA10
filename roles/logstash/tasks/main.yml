@@ -1,24 +1,47 @@
 ---
-- name: Install Logstash
+- name: Add Logstash GPG key (CentOS)
+  rpm_key:
+    key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+  when: ansible_distribution == "CentOS"
   become: true
+
+- name: Add Logstash repository (CentOS)
+  yum_repository:
+    name: logstash
+    description: Logstash repository
+    baseurl: https://artifacts.elastic.co/packages/7.x/yum
+    gpgcheck: yes
+    gpgkey: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    enabled: yes
+  when: ansible_distribution == "CentOS"
+  become: true
+
+- name: Install Logstash (CentOS)
+  yum:
+    name: logstash
+    state: present
+  when: ansible_distribution == "CentOS"
+  become: true
+
+- name: Add Logstash APT key (Ubuntu)
+  apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+  when: ansible_distribution == "Ubuntu"
+  become: true
+
+- name: Add Logstash repository (Ubuntu)
+  apt_repository:
+    repo: deb https://artifacts.elastic.co/packages/7.x/apt stable main
+    state: present
+    update_cache: yes
+  when: ansible_distribution == "Ubuntu"
+  become: true
+
+- name: Install Logstash (Ubuntu)
   apt:
     name: logstash
     state: present
-  notify: Start Logstash
   when: ansible_distribution == "Ubuntu"
-
-- name: Configure Logstash
   become: true
-  template:
-    src: logstash.yml.j2
-    dest: /etc/logstash/logstash.yml
-  notify: Restart Logstash
-  when: ansible_distribution == "Ubuntu"
-
-- name: Enable and Start Logstash Service
-  become: true
-  systemd:
-    name: logstash
-    enabled: yes
-    state: started
-  when: ansible_distribution == "Ubuntu"

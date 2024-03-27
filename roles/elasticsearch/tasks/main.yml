@@ -1,24 +1,47 @@
 ---
-- name: Install Elasticsearch
+- name: Add Elasticsearch GPG key (CentOS)
+  rpm_key:
+    key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+  when: ansible_distribution == "CentOS"
   become: true
+
+- name: Add Elasticsearch repository (CentOS)
+  yum_repository:
+    name: elasticsearch
+    description: Elasticsearch repository
+    baseurl: https://artifacts.elastic.co/packages/7.x/yum
+    gpgcheck: yes
+    gpgkey: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    enabled: yes
+  when: ansible_distribution == "CentOS"
+  become: true
+
+- name: Install Elasticsearch (CentOS)
+  yum:
+    name: elasticsearch
+    state: present
+  when: ansible_distribution == "CentOS"
+  become: true
+
+- name: Add Elasticsearch APT key (Ubuntu)
+  apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+  when: ansible_distribution == "Ubuntu"
+  become: true
+
+- name: Add Elasticsearch repository (Ubuntu)
+  apt_repository:
+    repo: deb https://artifacts.elastic.co/packages/7.x/apt stable main
+    state: present
+    update_cache: yes
+  when: ansible_distribution == "Ubuntu"
+  become: true
+
+- name: Install Elasticsearch (Ubuntu)
   apt:
     name: elasticsearch
     state: present
-  notify: Start Elasticsearch
   when: ansible_distribution == "Ubuntu"
-
-- name: Configure Elasticsearch
   become: true
-  template:
-    src: elasticsearch.yml.j2
-    dest: /etc/elasticsearch/elasticsearch.yml
-  notify: Restart Elasticsearch
-  when: ansible_distribution == "Ubuntu"
-
-- name: Enable and Start Elasticsearch Service
-  become: true
-  systemd:
-    name: elasticsearch
-    enabled: yes
-    state: started
-  when: ansible_distribution == "Ubuntu"

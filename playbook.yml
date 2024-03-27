@@ -3,6 +3,7 @@
   hosts: elasticsearch:kibana:logstash
   roles:
     - base
+    - java
     - elasticsearch
     - kibana
     - logstash
