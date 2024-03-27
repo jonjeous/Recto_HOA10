@@ -1,0 +1,8 @@
+---
+- name: Deploy Elastic Stack on Ubuntu and CentOS
+  hosts: elasticsearch:kibana:logstash
+  roles:
+    - base
+    - elasticsearch
+    - kibana
+    - logstash

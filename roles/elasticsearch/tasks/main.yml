@@ -1,0 +1,24 @@
+---
+- name: Install Elasticsearch
+  become: true
+  apt:
+    name: elasticsearch
+    state: present
+  notify: Start Elasticsearch
+  when: ansible_distribution == "Ubuntu"
+
+- name: Configure Elasticsearch
+  become: true
+  template:
+    src: elasticsearch.yml.j2
+    dest: /etc/elasticsearch/elasticsearch.yml
+  notify: Restart Elasticsearch
+  when: ansible_distribution == "Ubuntu"
+
+- name: Enable and Start Elasticsearch Service
+  become: true
+  systemd:
+    name: elasticsearch
+    enabled: yes
+    state: started
+  when: ansible_distribution == "Ubuntu"

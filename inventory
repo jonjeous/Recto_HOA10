@@ -1,0 +1,20 @@
+[ubuntu_servers]
+192.168.56.122 #Server1
+192.168.56.123 #Server2
+192.168.56.120 #ManagedNode
+
+[centos_servers]
+192.168.56.121 #CentOS
+
+
+[elasticsearch]
+192.168.56.122
+192.168.56.123
+
+
+[kibana]
+192.168.56.121
+
+
+[logstash]
+192.168.56.120
