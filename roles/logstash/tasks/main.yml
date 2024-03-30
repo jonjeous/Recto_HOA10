@@ -1,4 +1,3 @@
----
 - name: Add Logstash GPG key (CentOS)
   rpm_key:
     key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
